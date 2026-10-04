@@ -3,7 +3,6 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -32,7 +31,11 @@ impl<T> Stack<T> {
 	}
 	fn pop(&mut self) -> Option<T> {
 		// TODO
-		None
+		if self.size == 0 {
+			return None;
+		}
+		self.size -= 1;
+		self.data.pop()
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -101,7 +104,27 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
+	let mut stack = Stack::new();
+	for ch in bracket.chars() {
+		match ch {
+			'(' | '{' | '[' => stack.push(ch),
+			')' | '}' | ']' => {
+				if let Some(top) = stack.pop() {
+					if (ch == ')' && top != '(') ||
+					   (ch == '}' && top != '{') ||
+					   (ch == ']' && top != '[') {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+			_ => {} // Ignore other characters
+		}
+	}
+    if !stack.is_empty() {
+		return false;
+	}
 	true
 }
 
